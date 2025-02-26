@@ -1,2 +1,2 @@
 # FinWise
-Finance App
+Finance iOS App
