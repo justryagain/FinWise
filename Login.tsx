@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, Alert, Image, TouchableOpacity } from 'react-native';
-import {Text, TextInput, Button, Card} from 'react-native-paper';
+import {Text, TextInput, Button, Card, TouchableRipple} from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from './supabaseClient';
@@ -59,8 +59,16 @@ const LoginScreen = () => {
   return (
     <LinearGradient colors={['#1E3A5F', '#136F63']} style={styles.background}>
       <View style={styles.container}>
+        {/* Logo Container: Positioned absolutely to overlap the card */}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('./assets/logo.png')} // Update with your logo path
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
         <View style={styles.card}>
-          <Text style={styles.header}>Sign In</Text>
+          <Text style={styles.header}> </Text>
           <TextInput
             placeholder="Login"
             mode="outlined"
@@ -89,26 +97,31 @@ const LoginScreen = () => {
           </Button>
           {/* Google and Apple auth buttons */}
           <View style={styles.oauthContainer}>
-          <Button
-            mode="contained"
-            onPress={handleAppleSignIn}
-            style={[styles.oauthButton, styles.iconButton]}
-            contentStyle={styles.buttonContent}
-            icon={() => <MaterialCommunityIcons name="apple" size={20} color="#fff" />}
-          >
-            {''}
-          </Button>
-            <Button
-              mode="contained"
-              onPress={handleGoogleSignIn}
-              style={[styles.oauthButton, styles.iconButton]}
-              contentStyle={styles.buttonContent}
-              icon={() => <MaterialCommunityIcons name="google" size={20} color="#fff" />}
-              
-            >
-              {''}
-            </Button>
-          </View>    
+  <View style={styles.oauthButtonWrapper}>
+    <Button
+      mode="contained"
+      onPress={handleAppleSignIn}
+      style={[styles.oauthButton, { borderRadius: 3 }]}
+      contentStyle={[styles.buttonContent, { borderRadius: 3 }]}
+      labelStyle={styles.buttonLabel}
+      icon={() => <MaterialCommunityIcons name="apple" size={25} color="#fff" />}
+    >
+      Apple
+    </Button>
+  </View>
+  <View style={styles.oauthButtonWrapper}>
+    <Button
+      mode="contained"
+      onPress={handleGoogleSignIn}
+      style={[styles.oauthButton, { borderRadius: 3 }]}
+      contentStyle={[styles.buttonContent, { borderRadius: 3 }]}
+      labelStyle={styles.buttonLabel}
+      icon={() => <MaterialCommunityIcons name="google" size={20} color="#fff" />}
+    >
+      Google
+    </Button>
+  </View>
+</View>   
           {/* Separator */}
           <View style={styles.separator} />
           {/* Account Creation Prompt */}
@@ -132,7 +145,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   card: {
     width: '70%',
@@ -146,6 +158,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 24,
     marginBottom: 15,
+  },
+  logoContainer: {
+    position: 'absolute',
+    top: '23%',
+    zIndex: 1,
+    alignItems: 'center',
+    paddingLeft: 20
+  },
+  logo: {
+    width: 100,
+    height: 100,
   },
   input: {
     width: '100%',
@@ -169,27 +192,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#1DB954',
     marginTop: 10,
   },
-  iconButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  oauthContainer: {
+  oauthContainer: { 
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     marginTop: 10,
   },
-  oauthButton: {
+  oauthButtonWrapper: {
     width: '48%',
     height: 40,
-    borderRadius: 5,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  oauthButton: {
+    flex: 1,
+    backgroundColor: '#000',
   },
   buttonContent: {
-    height: 40,
-    width: '100%',
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonLabel: {
+    flex: 1,
+    textAlign: 'center',
   },
   separator: {
     width: '100%',
