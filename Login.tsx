@@ -32,11 +32,20 @@ const LoginScreen = () => {
       Alert.alert('OAuth Error', error.message);
     }
   };*/
-  const [login, setLogin] = useState('');
+  const [email, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignIn = () => {
-    // Your sign-in logic here
+  const handleSignIn = async () => {
+    const { error, data } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      Alert.alert('Login Error', error.message);
+    } else {
+      Alert.alert('Welcome!', `Logged in as ${data.user.email}`);
+      // Navigate to your main screen here
+    }
   };
 
   const handleAppleSignIn = () => {
@@ -73,7 +82,7 @@ const LoginScreen = () => {
             placeholder="Login"
             mode="outlined"
             style={styles.input}
-            value={login}
+            value={email}
             onChangeText={setLogin}
             underlineColor="transparent"
             placeholderTextColor="#888"
