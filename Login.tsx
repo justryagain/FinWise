@@ -64,6 +64,7 @@ const LoginScreen = () => {
             onChangeText={setLogin}
             underlineColor="transparent"
             placeholderTextColor="#888"
+            activeOutlineColor="#777"
           />
           <TextInput
             placeholder="Password"
@@ -74,6 +75,7 @@ const LoginScreen = () => {
             onChangeText={setPassword}
             underlineColor="transparent"
             placeholderTextColor="#888"
+            activeOutlineColor="#777"
           />
           {/*
           <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotContainer}>
