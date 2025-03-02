@@ -11,8 +11,12 @@ const LoginScreen = () => {
   const navigation = useNavigation<any>(); 
   const [email, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [signInClickCount, setSignInClickCount] = useState(0);
 
   const handleSignIn = async () => {
+
+    setSignInClickCount(prev => prev + 1);
+
     const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -39,7 +43,7 @@ const LoginScreen = () => {
   };
 
   const handleForgotPassword = () => {
-    // Your forgot password logic here
+    navigation.navigate('ResetPasswordScreen', { email });
   };
   
   return (
@@ -64,6 +68,7 @@ const LoginScreen = () => {
             underlineColor="transparent"
             placeholderTextColor="#888"
             activeOutlineColor="#777"
+            textContentType="none"
           />
           <TextInput
             placeholder="Password"
@@ -75,11 +80,13 @@ const LoginScreen = () => {
             underlineColor="transparent"
             placeholderTextColor="#888"
             activeOutlineColor="#777"
+            textContentType="none"
           />
-          {/*
-          <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotContainer}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>*/}
+          {signInClickCount >= 3 && (
+            <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotContainer}>
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          )}
           <Button mode="contained" onPress={handleSignIn} style={styles.signInButton}>
             Sign In
           </Button>
@@ -115,7 +122,7 @@ const LoginScreen = () => {
             <Text style={styles.promptText}>Don't have an account?</Text>
           </View>
           <TouchableOpacity onPress={handleCreateAccount}>
-              <Text style={styles.linkText}>Create an account</Text>
+              <Text style={styles.linkText}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>

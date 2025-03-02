@@ -6,6 +6,7 @@ import SignupScreen from './Signup.tsx';
 import MainScreen from './Main.tsx';
 import { supabase } from './supabaseClient';
 import { RootStackParamList } from './routes';
+import ResetPasswordScreen from './Reset.tsx';
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -48,6 +49,7 @@ export default function App() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="SignupScreen" component={SignupScreen} />
         <Stack.Screen name="MainScreen" component={MainScreen} />
+        <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />    
       </Stack.Navigator>
     </NavigationContainer>
   );

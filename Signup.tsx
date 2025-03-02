@@ -92,7 +92,7 @@ const SignupScreen = () => {
             activeOutlineColor="#777"
           />
           <Button mode="contained" onPress={handleCreateAccount} style={styles.signInButton}>
-            Create Account
+            Sign up
           </Button>
           {/* Separator */}
           <View style={styles.separator} />
@@ -100,8 +100,8 @@ const SignupScreen = () => {
           <View style={styles.accountPrompt}>
             <Text style={styles.promptText}>Already have an account?</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-            <Text style={styles.linkText}> Sign In</Text>
+          <TouchableOpacity onPress={() => navigation.reset({ index: 0, routes: [{ name: 'LoginScreen' }], })}>
+            <Text style={styles.linkText}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </View>
