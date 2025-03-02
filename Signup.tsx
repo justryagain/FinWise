@@ -1,142 +1,112 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import {Text, TextInput, Button, Card} from 'react-native-paper';
+import { View, Alert, Image, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Button } from 'react-native-paper';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from './supabaseClient';
+import { useNavigation } from '@react-navigation/native';
+import styles from './styles/style';
 
 const SignupScreen = () => {
-  // Sign In State
+  const navigation = useNavigation<any>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [repeatPassword, setRepeatPassword] = useState('');
 
-  // Handle Sign In
-  const handleLogin = async () => {
-    const { error, data } = await supabase.auth.signInWithPassword({
+  const handleCreateAccount = async () => {
+    // Check if passwords match
+    if (password !== repeatPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+    
+    // Create the account with Supabase
+    const { error: signUpError, data: signUpData } = await supabase.auth.signUp({
       email,
       password,
     });
-
-    if (error) {
-      Alert.alert('Login Error', error.message);
-    } else {
-      Alert.alert('Welcome!', `Logged in as ${data.user.email}`);
-      // Navigate to the main app screen here
+    
+    if (signUpError) {
+      Alert.alert('Sign Up Error', 'Email and password missing or invalid.');
+      return;
     }
-  };
-
-  // Handle Google Sign In
-  const handleOAuthLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-
-    if (error) {
-      Alert.alert('OAuth Error', error.message);
+    
+    // Optionally, you can automatically sign the user in if the account is confirmed
+    // Supabase may automatically create a session if email confirmation is disabled.
+    const { error: signInError, data: signInData } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (signInError) {
+      Alert.alert('Login Error', signInError.message);
+    } else {
+      Alert.alert('Welcome!', `Signed in as ${signInData.user?.email}`);
+      navigation.navigate('MainScreen', { email });
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-    >
-      <View style={styles.authContainer}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <Text style={styles.title}>Sign In</Text>
-            <TextInput
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              mode="outlined"
-              onFocus={() => setFocusedInput('email')}
-              onBlur={() => setFocusedInput(null)}
-              style={[
-                styles.input,
-                focusedInput === 'email' && styles.inputFocused, // Changes border on focus
-              ]}
-            />
-            <TextInput
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              mode="outlined"
-              secureTextEntry
-              onFocus={() => setFocusedInput('password')}
-              onBlur={() => setFocusedInput(null)}
-              style={[
-                styles.input,
-                focusedInput === 'password' && styles.inputFocused, // Changes border on focus
-              ]}
-            />
-            {/* Normal Sign In Button */}
-            <Button mode="contained" onPress={handleLogin} style={styles.button}>
-              Sign In
-            </Button>
-
-            {/* Google Sign In Button */}
-            <Button
-              mode="outlined"
-              icon="google"
-              onPress={handleOAuthLogin}
-              style={styles.oauthButton}
-              textColor="#fff"
-            >
-              Sign in with Google
-            </Button>
-          </Card.Content>
-        </Card>
+    <LinearGradient colors={['#1E3A5F', '#136F63']} style={styles.background}>
+      <View style={styles.container}>
+        {/* Logo Container */}
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('./assets/logo.png')} // Update with your logo path
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+        <View style={styles.card}>
+          <Text style={styles.header}> </Text>
+          <TextInput
+            placeholder="Email"
+            mode="outlined"
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            underlineColor="transparent"
+            placeholderTextColor="#888"
+            activeOutlineColor="#777"
+          />
+          <TextInput
+            placeholder="Password"
+            secureTextEntry
+            mode="outlined"
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            underlineColor="transparent"
+            placeholderTextColor="#888"
+            activeOutlineColor="#777"
+          />
+          <TextInput
+            placeholder="Repeat Password"
+            secureTextEntry
+            mode="outlined"
+            style={styles.input}
+            value={repeatPassword}
+            onChangeText={setRepeatPassword}
+            underlineColor="transparent"
+            placeholderTextColor="#888"
+            activeOutlineColor="#777"
+          />
+          <Button mode="contained" onPress={handleCreateAccount} style={styles.signInButton}>
+            Create Account
+          </Button>
+          {/* Separator */}
+          <View style={styles.separator} />
+          {/* Already have an account prompt */}
+          <View style={styles.accountPrompt}>
+            <Text style={styles.promptText}>Already have an account?</Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+            <Text style={styles.linkText}> Sign In</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </KeyboardAvoidingView>
+    </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#2c2c2c', // 🔹 Modern Grey Background
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  authContainer: {
-    width: '25%', // 🔹 Smaller width for compact layout
-    minWidth: 280, // 🔹 Minimum width for smaller screens
-  },
-  card: {
-    backgroundColor: '#1e1e1e', // 🔹 Dark panel like Netflix
-    paddingVertical: 30,
-    borderRadius: 10,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#fff',
-    marginBottom: 20,
-  },
-  input: {
-    marginBottom: 15,
-    backgroundColor: '#f4f4f4', // 🔹 Light grey input field for contrast
-    borderColor: '#ccc', // Default border
-  },
-  inputFocused: {
-    borderColor: '#E50914', // 🔹 Netflix Red border on focus
-    borderWidth: 2,
-  },
-  button: {
-    marginTop: 10,
-    backgroundColor: '#E50914', // 🔹 Netflix Red
-    borderRadius: 5, // 🔹 Matches Google button
-  },
-  oauthButton: {
-    marginTop: 10,
-    borderRadius: 5,
-    borderColor: '#fff',
-  },
-});
 
 export default SignupScreen;

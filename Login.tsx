@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, KeyboardAvoidingView, Platform, Alert, Image, TouchableOpacity } from 'react-native';
-import {Text, TextInput, Button, Card, TouchableRipple} from 'react-native-paper';
+import { View, Alert, Image, TouchableOpacity } from 'react-native';
+import {Text, TextInput, Button} from 'react-native-paper';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { supabase } from './supabaseClient'
 import { useNavigation } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import styles from './styles/style';
 
 const LoginScreen = () => {
@@ -19,7 +18,7 @@ const LoginScreen = () => {
       password,
     });
     if (error) {
-      Alert.alert('Login Error', error.message);
+      Alert.alert('Login Error', 'Incorrect email or password.');
     } else {
       Alert.alert('Welcome!', `Logged in as ${data.user.email}`);
       navigation.navigate('MainScreen', { email });
@@ -36,7 +35,7 @@ const LoginScreen = () => {
   };
 
   const handleCreateAccount = () => {
-    // Your create account logic here
+    navigation.navigate('SignupScreen');
   };
 
   const handleForgotPassword = () => {
@@ -57,7 +56,7 @@ const LoginScreen = () => {
         <View style={styles.card}>
           <Text style={styles.header}> </Text>
           <TextInput
-            placeholder="Login"
+            placeholder="Email"
             mode="outlined"
             style={styles.input}
             value={email}
@@ -116,7 +115,7 @@ const LoginScreen = () => {
             <Text style={styles.promptText}>Don't have an account?</Text>
           </View>
           <TouchableOpacity onPress={handleCreateAccount}>
-              <Text style={styles.linkText}> Create an account</Text>
+              <Text style={styles.linkText}>Create an account</Text>
           </TouchableOpacity>
         </View>
       </View>
